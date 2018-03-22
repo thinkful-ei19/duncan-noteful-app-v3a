@@ -45,7 +45,7 @@ router.post('/folders', (req, res, next) => {
   
   if (!name) {
     const err = new Error('Missing `name` in request body');
-    res.status(400);
+    err.status = 400;
     return next(err);
   }
   const newItem = {name};
