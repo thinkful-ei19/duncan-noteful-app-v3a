@@ -70,14 +70,15 @@ router.post('/notes', (req, res, next) => {
     err.status = 400;
     return next(err);
   }
-
-  tags.forEach(tagId => {
-    if (!mongoose.Types.ObjectId.isValid(tagId)) {
-      const err = new Error('The `tagsid` is not valid');
-      err.status = 400;
-      return next(err);
-    }
-  });
+  if (tags) {
+    tags.forEach(tagId => {
+      if (!mongoose.Types.ObjectId.isValid(tagId)) {
+        const err = new Error('The `tagsid` is not valid');
+        err.status = 400;
+        return next(err);
+      }
+    });
+  }
 
   const newItem = { title, content, folderId, tags };
 
@@ -107,14 +108,16 @@ router.put('/notes/:id', (req, res, next) => {
     err.status = 400;
     return next(err);
   }
-
-  tags.forEach(tagId => {
-    if (!mongoose.Types.ObjectId.isValid(tagId)) {
-      const err = new Error('The `id` is not valid');
-      err.status = 400;
-      return next(err);
-    }
-  });
+  
+  if (tags) {
+    tags.forEach(tagId => {
+      if (!mongoose.Types.ObjectId.isValid(tagId)) {
+        const err = new Error('The `id` is not valid');
+        err.status = 400;
+        return next(err);
+      }
+    });
+  }
 
   const updateItem = { title, content, folderId, tags };
   // options is to ensure that the updated object is returned

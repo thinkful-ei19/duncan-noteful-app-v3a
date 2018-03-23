@@ -13,7 +13,7 @@ const expect = chai.expect;
 
 chai.use(chaiHttp);
 
-describe.only('Noteful API - tags', function () {
+describe('Noteful API - tags', function () {
   before(function () {
     return mongoose.connect(TEST_MONGODB_URI);
   });
