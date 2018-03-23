@@ -95,6 +95,7 @@ router.put('/notes/:id', (req, res, next) => {
   }
 
   const updateItem = { title, content, folderId };
+  // options is to ensure that the updated object is returned
   const options = { new: true };
 
   Note.findByIdAndUpdate(id, updateItem, options)
