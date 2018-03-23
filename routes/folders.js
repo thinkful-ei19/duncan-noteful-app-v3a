@@ -6,7 +6,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Folder = require('../models/folder');
-
+const Note = require('../models/note');
 
 /* ========== GET/READ ALL ITEMS ========== */
 router.get('/folders', (req, res, next) => {
@@ -105,7 +105,25 @@ router.put('/folders/:id', (req, res, next) => {
 router.delete('/folders/:id', (req, res, next) => {
   const { id } = req.params;
   
-  Folder.findByIdAndRemove(id)
+  // Manual "cascading" delete to ensure integrity
+  const folderRemovePromise = Folder.findByIdAndRemove({ _id: id });  // NOTE **underscore** _id
+  //   const noteRemovePromise = Note.deleteMany({ folderId: id });
+  
+  /*
+     * BONUS CHALLENGE:
+     *
+     * - Create a No-SQL equivalent to ON DELETE SET NULL. When a user deletes a
+     *   folder, set the folderId to NULL (or remove the folderId property)
+     *   on all the associated notes
+      */
+  const noteRemovePromise = Note.updateMany(
+    { folderId: id },
+    { '$unset': { 'folderId': '' } }
+  );
+     
+    
+  
+  Promise.all([folderRemovePromise, noteRemovePromise])
     .then(() => {
       res.status(204).end();
     })

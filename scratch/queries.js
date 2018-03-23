@@ -10,13 +10,10 @@ const Note = require('../models/note');
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
-    Note.update(
-      { },
-      { $pull: {tags: ['222222222222222222222201'] } },
-      { multi: true }
-    );
+    Note.update({},
+      { $pull: { tags: { $in: ['222222222222222222222200']}}},
+      { multi: true }).then(res => console.log(res));
   })
-  .then(res => console.log(res))
   .then(() => mongoose.disconnect());
-
+  
   

@@ -6,6 +6,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Tag = require('../models/tag');
+const Note = require('../models/note');
 
 /* ========== GET/READ ALL ITEMS ========== */
 router.get('/tags', (req, res, next) => {
@@ -104,7 +105,10 @@ router.put('/tags/:id', (req, res, next) => {
 router.delete('/tags/:id', (req, res, next) => {
   const { id } = req.params;
     
-  Tag.findByIdAndRemove(id)
+  const tagsPromise = Tag.findByIdAndRemove(id);
+  const notesPromise = Note.update({},{ $pull: { tags: { $in: [id]}}},{ multi: true });
+  
+  Promise.all([tagsPromise, notesPromise])
     .then(() => {
       res.status(204).end();
     })
